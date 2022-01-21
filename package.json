@@ -1,0 +1,15 @@
+{
+  "name": "mini-golf",
+  "version": "1.0.0",
+  "description": "Simple mini-golf game created to learn JS",
+  "main": "mini-golf.js",
+  "dependencies": {
+    "p5": "^1.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thiago Lages",
+  "license": "ISC"
+}
