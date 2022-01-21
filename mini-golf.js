@@ -1,25 +1,3 @@
-let canvasWidth = 450
-let canvasHeight = 600
-
-let ballRadius = 8.5
-let holeRadius = 12.5
-
-let ballColor = (255,255,255)
-let holeColor = (127,127,127)
-
-let ballStartX = canvasWidth/2
-let ballStartY = canvasHeight/2
-
-let holeStartX = canvasWidth/2
-let holeStartY = canvasHeight/10
-
-let holeTolerance = 8 // tolerance whether we were close enough to the hole or not
-
-let newX = 0
-let newY = 0
-
-let ball = {}
-
 function setup() {
     console.log("setup");
 
@@ -29,8 +7,10 @@ function setup() {
     createCanvas(canvasWidth, canvasHeight)
     background(0, 200, 0)
 
-    ball = new Ball (ballStartX,ballStartY , ballRadius, ballColor, "ball")
+    ball = new Ball (ballStartX, ballStartY, ballRadius, ballColor, "ball")
     hole = new Ball (holeStartX, holeStartY, holeRadius, holeColor, "hole")
+
+    obs1 = new Obstacle((ballStartX+holeStartX)/2-20, (ballStartY+holeStartY)/2+40, 30, 30, obstacleColor)
 
 }
 
@@ -52,12 +32,11 @@ function draw() {
     ball.draw()
     getUserAction(ball.x, ball.y)
 
-    if (isCollision(ball,hole)){
-        ball.x = ballStartX
-        ball.y = ballStartY
-        ball.xspeed = 0.0
-        ball.yspeed = 0.0
-    }
+    // draw obstacle
+    obs1.draw()
+
+    checkSuccessfulShot(ball, hole)
+    checkObstacleCollision(ball, obs1)
    
 }
 
@@ -85,25 +64,22 @@ function getUserAction(x, y){
     
     
 
-    /************************************************* */
-
+    /************************************************* */   
     // arrow size defined by mouse
-    oldX = newX
-    oldY = newY
+    if( mouseIsPressed && isLegalMousePress() && ball.isStill()){
 
-    newX = x-(mouseX-x)*0.5
-    newY = y-(mouseY-y)*0.5
+        newX = x-(mouseX-initialMouseX)*arrowReductionRatio
+        newY = y-(mouseY-initialMouseY)*arrowReductionRatio
 
-    size_a = x-newX
-    size_b = y-newY
+        size_a = initialMouseX-mouseX
+        size_b = initialMouseY-mouseY
 
-    if(sqrt(size_a*size_a + size_b*size_b)>50){
-        theta = -atan2(mouseY-y, mouseX-x)        
-        newX = x - cos(theta)*50
-        newY = y + sin(theta)*50
-    }
-    
-    if(mouseIsPressed && isMouseInsideCanvas()){
+        if(sqrt(size_a*size_a + size_b*size_b)>maxArrowSize){
+            theta = -atan2(mouseY-initialMouseY, mouseX-initialMouseX)        
+            newX = x - cos(theta)*maxArrowSize*arrowReductionRatio
+            newY = y + sin(theta)*maxArrowSize*arrowReductionRatio
+        }
+
         line(x, y, newX, newY)
 
         deltaX = newX-x
@@ -120,8 +96,15 @@ function getUserAction(x, y){
     }    
 }
 
+function mousePressed() {
+    if (mouseButton === LEFT){
+        initialMouseX = mouseX
+        initialMouseY = mouseY
+    }
+}
+
 function mouseReleased(){
-    if (isMouseInsideCanvas()){
+    if (isLegalMousePress() && ball.isStill()){
         ball.xspeed = deltaX
         ball.yspeed = deltaY
     }
@@ -129,12 +112,64 @@ function mouseReleased(){
     // console.log(`yspeed = ${ball.yspeed}`);
 }
 
-function isCollision(ball, hole){
+
+function checkObstacleCollision(ball, obstacle){
+
+    /* RETORNAR AQUI */
+
+    if (isBallObstacleCollision(ball, obstacle)){ // check if there is any collision
+        // check which collision it was (horizontal or vertical)
+        if (isHorizontalCollision(ball, obstacle)){ 
+            console.log("HORIZONTAL COLLISION!");
+            console.log(`ball.x, y = ${ball.x}, ${ball.y-ball.r}, obst.p1, p4 = (${obstacle.posX}, ${obstacle.posY}), (${obstacle.posX+obstacle.width}, ${obstacle.posY+obstacle.height})`);
+            ball.xspeed = -ball.xspeed
+        }
+        if (isVerticalCollision(ball, obstacle)){ 
+            console.log("VERTICAL COLLISION!");
+            ball.yspeed = -ball.yspeed
+        }
+    }
+}
+
+function isBallObstacleCollision(ball, obst){
+    return (isHorizontalCollision(ball, obst) && isVerticalCollision(ball, obst))
+}
+
+function isHorizontalCollision(ball, obst){
+    if ((ball.x + ball.r) > obst.posX &&  (ball.x + ball.r) < (obst.posX + obst.width  + 2*ball.r) ){
+        return true
+    }else{
+        return false
+    } 
+}
+
+function isVerticalCollision(ball, obst){
+    // console.log(`ball.x, y = ${ball.x}, ${ball.y}, obst.x, y = ${obst.posX}, ${obst.posY}`);
+    if ((ball.y + ball.r) > obst.posY &&  (ball.y + ball.r) < (obst.posY + obst.height + 2*ball.r)){
+        return true
+    }else {
+        return false
+    }
+}
+
+function checkSuccessfulShot(ball, hole){
+    
+    if (isCircleCollision(ball,hole)){
+            ball.x = ballStartX
+            ball.y = ballStartY
+            ball.xspeed = 0.0
+            ball.yspeed = 0.0
+        }
+
+}
+
+function isCircleCollision(ball, hole){
+
     dist_X = ball.x - hole.x
     dist_Y = ball.y - hole.y
     let dist_ = +0.0
     dist_ = sqrt(dist_X*dist_X + dist_Y*dist_Y)
-    if(dist_ <= (ball.radius + holeTolerance)){       
+    if(dist_ <= (ball.r + holeTolerance)){       
         return true
     }else{
         return false
@@ -143,4 +178,8 @@ function isCollision(ball, hole){
 
 function isMouseInsideCanvas(){
     return (mouseX > 0 && mouseX < canvasWidth && mouseY > 0 && mouseY < canvasHeight)
+}
+
+function isLegalMousePress(){
+    return (mouseButton === LEFT && isMouseInsideCanvas())
 }
