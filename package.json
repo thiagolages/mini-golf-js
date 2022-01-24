@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Simple mini-golf game created to learn JS",
   "main": "mini-golf.js",
-  "dependencies": {
-    "p5": "^1.4.0"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
