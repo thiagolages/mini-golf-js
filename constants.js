@@ -27,7 +27,7 @@ let ballStillTolerance = 1e-3 // tolerence for ball to be considered to be still
 let newX = 0.0
 let newY = 0.0
 
-let deltaX = 0.0
-let deltaY = 0.0
+let ballXSpeed = 0.0
+let ballYSpeed = 0.0
 
 let ball = {}

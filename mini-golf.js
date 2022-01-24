@@ -82,14 +82,26 @@ function getUserAction(x, y){
 
         line(x, y, newX, newY)
 
-        deltaX = newX-x
-        deltaY = newY-y
+        // lineRectIntersection(line, rectangle)
+        // twoLinesIntersection(line1, line2)
+
+        //  extend line so that we can see where it's going
+        aux_lineX = newX +10
+        aux_lineY = newY +10
+        // while(  aux_lineX > 0 && aux_lineX < canvasWidth &&
+        //         aux_lineY > 0 && aux_lineY < canvasHeight){
+        //     line(newX,  newX, aux_lineX, aux_lineY)
+        // }
+
+
+        ballXSpeed = newX-x
+        ballYSpeed = newY-y
 
         theta = -atan2(newY-y, newX-x)
         if (theta <0){
             theta = 360 + theta
         }
-        // console.log(`theta=${theta}`)
+        // // console.log(`theta=${theta}`)
         line(newX, newY, newX-20*cos(theta-30), newY+20*sin(theta-30))
         line(newX, newY, newX-20*cos(-theta-30), newY-20*sin(-theta-30))
 
@@ -105,8 +117,8 @@ function mousePressed() {
 
 function mouseReleased(){
     if (isLegalMousePress() && ball.isStill()){
-        ball.xspeed = deltaX
-        ball.yspeed = deltaY
+        ball.xspeed = ballXSpeed
+        ball.yspeed = ballYSpeed
     }
     // console.log(`xspeed = ${ball.xspeed}`);
     // console.log(`yspeed = ${ball.yspeed}`);
