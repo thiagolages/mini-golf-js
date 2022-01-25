@@ -19,7 +19,7 @@ function draw() {
     // console.log(`${mouseX}, ${mouseY}`);
     
     //draw field
-    createCanvas(canvasWidth, canvasHeight)
+    let canvas = createCanvas(canvasWidth, canvasHeight)
     background(0, 200, 0)
     
     // draw hole

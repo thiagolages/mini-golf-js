@@ -11,7 +11,7 @@ class Ball {
         this.xspeed = 0.0
         this.yspeed = 0.0
         this.dt=0.1
-        this.friction = 0.993
+        this.friction = 0.994
 
         console.log(`Created a Ball object with name ${this.name}, (x,y) = (${this.x}, ${this.y}), radius of ${this.r}`);
     }
