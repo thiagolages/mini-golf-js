@@ -20,8 +20,13 @@ class Ball {
         this.x += this.xspeed*this.dt
         this.y += this.yspeed*this.dt
         
-        this.xspeed *= this.friction
-        this.yspeed *= this.friction
+        if (this.isStill()){
+            this.xspeed = 0.0
+            this.yspeed = 0.0
+        }else{
+            this.xspeed *= this.friction
+            this.yspeed *= this.friction
+        }
 
 
         if((this.x - this.r < 0) || (this.x + this.r > canvasWidth)){
