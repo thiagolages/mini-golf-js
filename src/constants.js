@@ -21,7 +21,7 @@ let maxArrowSize = 100
 let arrowReductionRatio = 0.7 // allows for finer control when using the mouse
 
 let holeTolerance = 8 // tolerance whether we were close enough to the hole or not
-let ballStillTolerance = 1e-3 // tolerence for ball to be considered to be still
+let ballStillTolerance = 1e-2 // tolerence for ball to be considered to be still
 
 
 let newX = 0.0
