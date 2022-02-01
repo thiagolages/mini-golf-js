@@ -40,7 +40,7 @@ class Ball {
     }
 
     isStill(){
-        return this.xspeed <= ballStillTolerance && this.yspeed <= ballStillTolerance
+        return Math.sqrt((this.xspeed*this.xspeed)+(this.yspeed*this.yspeed)) <= ballStillTolerance
     }
 
 
